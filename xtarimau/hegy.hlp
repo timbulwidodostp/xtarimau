@@ -1,0 +1,185 @@
+{smcl}
+{* 04sep2014}{...}
+{cmd:help hegy}{right: ({browse "http://www.stata-journal.com/article.html?article=st0453":SJ16-3: st0453})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 13 15 2}{...}
+{p2col:{hi:hegy} {hline 2}}Hylleberg et al. (1990) seasonal unit-root tests 
+with OLS and GLS detrending (Rodrigues and Taylor 2007) and lag-length
+selection based on MAIC, AIC, BIC, and the sequential method{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 13 2}
+{cmd:hegy}
+{varname}
+{ifin}
+[{cmd:,} {it:options}]
+
+{phang}
+You must {opt tsset} your data before using {opt hegy}, and you must
+specify either {opt quarterly} or {opt monthly} with {opt tsset}; 
+see {helpb tsset}.
+
+{synoptset 18}{...}
+{synopthdr}
+{synoptline}
+{synopt:{opt maxl:ag(integer)}}maximal lag tested{p_end}
+{synopt:{opt d:et(string)}}deterministic terms included{p_end}
+{synopt:{opt lev:el(integer)}}significance level for sequential testing{p_end}
+{synopt:{opt m:ode(string)}}lag selection method{p_end}
+{synopt:{opt res:iduals(string)}}generate a variable containing the residual terms{p_end}
+{synopt:{opt noa:c}}suppress the autocorrelation test of residuals{p_end}
+{synopt:{opt nor:eg}}suppress the regression output{p_end}
+{synopt:{opt g:ls}}apply GLS detrending{p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd}
+{opt hegy} performs the Hylleberg, Engle, Granger, and Yoo (HEGY) (1990) test
+for both monthly and quarterly data, allowing for ordinary least-squares (OLS)
+and generalized least-squares (GLS) detrending (controlled by {opt gls}
+option).  It allows the user to automatically determine the lag-length
+selection (order of augmentation) based on the Akaike information criterion
+(AIC), modified AIC (MAIC) (del Barrio Castro, Osborn, and Taylor 2016),
+Bayesian information criterion (BIC), and sequential t test for the last
+augmentation lag (Hall 1994; Ng and Perron 2001).  Users may control the
+deterministic terms with help of the {cmd:det()} option.  The command reports
+left-tail t-test statistics for zero and Nyquist frequencies as well as F-type
+test statistics for complex unit roots and two joint F-type tests.  The
+statistics are reported jointly with the 1%, 5%, and 10% critical values.  The
+critical values are constructed from the empirically estimated response
+surface (del Barrio Castro, Bodnar, and Sans{c o'} 2015).
+
+
+{title:Options}
+
+{phang}
+{opt maxlag(#)} specifies the maximum lag order to be included for augmenting
+the model with AR terms.  Its default value is dependent on the sample size.
+This option is used for all methods: AIC, MAIC, BIC, sequential t test, and
+fixed lag.
+
+{phang}
+{opt det(string)} controls for the deterministic terms present in the time
+series.  {it:string} may take on values {opt none}, {opt const}, {opt seas},
+{opt trend}, {opt strend}, or {opt mult} to specify the deterministic part of
+the process to be tested.  The default is {cmd:det(seas)}, as suggested by
+Hylleberg et al. (1990) and Ghysels, Lee, and Noh (1994).  It indicates that a
+set of seasonal intercepts be included in the regression; {opt none} specifies
+that no deterministic variables be included; {opt const} specifies only a
+constant; {cmd:trend} specifies that a linear trend be included along with a
+constant term; {cmd:strend} specifies that a linear trend be included along
+with seasonal intercepts; {opt mult} specifies that seasonal intercepts along
+with seasonal trends be included (the case of multiplicative seasonality
+recommended by Smith and Taylor [1998]).  If the {opt gls} option is
+specified, {opt det()} cannot be {cmd:none}.
+
+{phang}
+{opt level(#)} indicates the significance level for the sequential t test as a
+percentage.  This option must be used with the {cmd:mode(seq)} option.  The
+default is {cmd:level(10)}, which corresponds to a 10% significance level.
+
+{phang}
+{opt mode(string)} specifies the method for selecting the augmentation lag.
+{it:string} may take the values {opt aic}, {opt maic}, {opt bic}, {opt seq},
+or {opt fix}.  {opt aic} corresponds to the AIC, {opt maic} to the MAIC,
+{cmd:bic} to the BIC, {cmd:seq} to the sequential t test method, and {opt fix}
+to a user-specified lag length.  The default is {cmd:mode(maic)}.
+
+{phang}
+{opt residuals(string)} generates a variable containing the residual terms.
+
+{phang}
+{opt noac} suppresses the autocorrelation function (ACF), the partial ACF, and
+the Ljung-Box Q statistics of the residuals.  The default value of ACF lags is
+equal to {opt maxlag()}.
+
+{phang}
+{opt noreg} suppresses the corresponding regression table, which is reported
+by default.
+
+{phang}
+{opt gls} introduces the GLS detrending procedure proposed by Rodrigues and
+Taylor (2007) before applying the HEGY test.  This option requires
+deterministic terms to be specified as {cmd:det(const)}, {cmd:det(trend)},
+{cmd:det(seas)}, {cmd:det(strend)}, or {cmd:det(mult)}.
+
+
+{title:Examples}
+
+{phang}{cmd:. hegy ipi}
+
+{phang}{cmd:. hegy ipi, maxlag(12) det(mult) mode(maic) residuals(res01)}
+
+{phang}{cmd:. hegy ipi, gls maxlag(12) det(mult) mode(maic)}
+
+
+{title:References}
+
+{phang}
+del Barrio Castro, T., A. Bodnar, and A. Sans{c o'}. 2015. Numerical
+distribution functions for seasonal unit root tests with OLS and GLS
+detrending. Working Paper 73, DEA. 
+{browse "http://dea.uib.es/digitalAssets/353/353054_w73.pdf"}.
+
+{phang}
+del Barrio Castro, T., D. R. Osborn, and A. M. R. Taylor. 2016. The
+performance of lag selection and detrending methods for HEGY seasonal unit
+root tests. {it:Econometric Reviews} 35: 122-168.
+
+{phang}
+Ghysels, E., H. S. Lee, and J. Noh. 1994. Testing for unit roots in seasonal
+time series: Some theoretical extensions and a Monte Carlo investigation.
+{it:Journal of Econometrics} 62: 415-442.
+
+{phang}
+Hall, A. 1994. Testing for a unit root in time series with pretest data-based
+model selection.  {it:Journal of Business and Economic Statistics} 12: 461-470.
+
+{phang}
+Hylleberg, S., R. F. Engle, C. W. J. Granger, and B. S. Yoo. 1990. Seasonal
+integration and cointegration. {it:Journal of Econometrics} 44: 215-238.
+
+{phang}
+Ng, S., and P. Perron. 2001. Lag length selection and the construction of unit
+root tests with good size and power. {it:Econometrica} 69: 1519-1554.
+
+{phang}
+Rodrigues, P. M. M., and A. M. R. Taylor. 2007.  Efficient tests of the
+seasonal unit root hypothesis. {it:Journal of Econometrics} 141: 548-573.
+
+{phang}
+Smith, R. J., and A. M. R. Taylor. 1998. Additional critical values and
+asymptotic representations for seasonal unit root tests.  
+{it:Journal of Econometrics} 85: 269-288.
+
+
+{title:Authors}
+	
+{pstd}Tom{c a'}s del Barrio Castro{break}
+Department of Applied Economics{break}
+University of the Balearic Islands{break}
+Palma, Spain{break}
+{browse "mailto:andrii.tomas.barrio@uib.es":tomas.barrio@uib.es}
+
+{pstd}Andrii Bodnar{break}
+{browse "mailto:andrii.bodnar@gmail.com":andrii.bodnar@gmail.com}
+	
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 16, number 3: {browse "http://www.stata-journal.com/article.html?article=st0453":st0453}
+
+{p 5 14 2}
+Manual:  {manlink TS dfuller}{p_end}
+
+{p 7 14 2}Help:  {manhelp dfuller TS}, {manhelp tsset TS},{break}
+{helpb hegy4}, {helpb sroot} (if installed){p_end}

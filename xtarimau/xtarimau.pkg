@@ -1,0 +1,11 @@
+D 'xtarimau': Finds the best [S]ARIMA[X] models in heterogeneous panels with the help of arimaauto Use xtarimau With STATA 19
+D
+F arimaauto.ado
+F arimaauto.sthlp
+F hegy.ado
+F hegy.hlp
+F kpss.ado
+F kpss.hlp
+F larimaauto.mlib
+F xtarimau.ado
+F xtarimau.sthlp
